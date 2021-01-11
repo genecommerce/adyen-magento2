@@ -50,7 +50,7 @@ define(
             },
 
             test: function () {
-                console.log('testsetst');
+                console.log('asd');
             },
 
             /**

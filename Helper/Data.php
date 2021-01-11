@@ -642,6 +642,18 @@ class Data extends AbstractHelper
     }
 
     /**
+     * Gives back adyen_apple_pay configuration values
+     *
+     * @param $field
+     * @param null|int|string $storeId
+     * @return mixed
+     */
+    public function isAdyenApplePayEnabled($storeId = null)
+    {
+        return $this->getAdyenApplePayConfigData('active', $storeId);
+    }
+
+    /**
      * @param null|int|string $storeId
      * @return mixed
      */

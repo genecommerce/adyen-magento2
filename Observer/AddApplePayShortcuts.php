@@ -33,6 +33,23 @@ use Magento\Framework\Exception\LocalizedException;
 
 class AddApplePayShortcuts implements ObserverInterface
 {
+
+    /**
+     * @var \Adyen\Payment\Helper\Data
+     */
+    private $adyenHelper;
+
+    /**
+     * AdyenBoletoDataAssignObserver constructor.
+     *
+     * @param \Adyen\Payment\Helper\Data $adyenHelper
+     */
+    public function __construct(
+        \Adyen\Payment\Helper\Data $adyenHelper
+    ) {
+        $this->adyenHelper = $adyenHelper;
+    }
+
     /**
      * Add apple pay shortcut button
      *
@@ -44,6 +61,10 @@ class AddApplePayShortcuts implements ObserverInterface
     {
         // Remove button from catalog pages
         if ($observer->getData('is_catalog_product')) {
+            return;
+        }
+
+        if (!$this->adyenHelper->getAdyenApplePayConfigData('enable_button') ||  !$this->adyenHelper->isAdyenApplePayEnabled()) {
             return;
         }
 

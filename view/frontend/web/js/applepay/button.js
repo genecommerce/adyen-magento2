@@ -34,13 +34,19 @@ define([
         'Adyen_Payment/js/applepay/api',
         'mage/translate',
     ],
-    function ($, ko, quote, Component, placeOrderAction, additionalValidators, urlBuilder, storage, url, Messages, api, $t) {
+    function ($, ko, quote, Component, placeOrderAction, additionalValidators, urlBuilder, storage, url, Messages, Api, $t) {
         'use strict';
         var canMakeApplePayPayments = ko.observable(false);
         var applePayVersion = 6;
         return Component.extend({
             defaults: {
                 id: null,
+                quoteId: 0,
+                displayName: null,
+                actionSuccess: null,
+                grandTotalAmount: 0,
+                isLoggedIn: false,
+                storeCode: "default"
             },
 
             isShowLegend: function () {
@@ -54,12 +60,6 @@ define([
             },
             getCode: function () {
                 return 'adyen_apple_pay';
-            },
-            getData: function () {
-                return {
-                    'method': this.item.method,
-                    'additional_data': {}
-                };
             },
             isActive: function () {
                 return true;
@@ -86,7 +86,8 @@ define([
                 el.addEventListener('click', function (e) {
                     event.preventDefault();
 
-                    api.test();
+                    var context = new Api();
+
 
                     var self = this;
                     if (!additionalValidators.validate()) {
@@ -101,6 +102,20 @@ define([
                     };
                     var session = new ApplePaySession(applePayVersion, request);
 
+                    if (typeof context.onShippingContactSelect === 'function') {
+                        session.onshippingcontactselected = function (event) {
+                            console.log(123);
+                            return context.onShippingContactSelect(event, session);
+                        };
+                    }
+
+                    // Attach onShippingMethodSelect method
+                    if (typeof context.onShippingMethodSelect === 'function') {
+                        session.onshippingmethodselected = function (event) {
+                            console.log(12322);
+                            return context.onShippingMethodSelect(event, session);
+                        };
+                    }
                     session.onvalidatemerchant = function (event) {
                         var promise = self.performValidation(event.validationURL);
                         promise.then(function (merchantSession) {
@@ -142,18 +157,20 @@ define([
 
 
                     // Attach onShippingContactSelect method
-                    /*if (typeof context.onShippingContactSelect === 'function') {
+                    if (typeof context.onShippingContactSelect === 'function') {
                         session.onshippingcontactselected = function (event) {
-                            return context.onShippingContactSelect(event, session);
+                            console.log(123);
+                            //return context.onShippingContactSelect(event, session);
                         };
-                    }*/
+                    }
 
                     // Attach onShippingMethodSelect method
-                    /*if (typeof context.onShippingMethodSelect === 'function') {
+                    if (typeof context.onShippingMethodSelect === 'function') {
                         session.onshippingmethodselected = function (event) {
+                            console.log(12322);
                             return context.onShippingMethodSelect(event, session);
                         };
-                    }*/
+                    }
 
                     session.begin();
                 }.bind(this));

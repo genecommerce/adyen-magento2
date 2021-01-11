@@ -27,11 +27,14 @@ use Adyen\Payment\Block\ApplePay\AbstractButton;
 use Magento\Checkout\Model\Session;
 use Magento\Catalog\Block\ShortcutInterface;
 use Magento\Checkout\Model\DefaultConfigProvider;
+use Magento\Customer\Model\Session as CustomerSession;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
+use Magento\Framework\UrlInterface;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Payment\Model\MethodInterface;
 use Magento\Framework\Exception\NoSuchEntityException;
+use Magento\Store\Model\StoreManagerInterface;
 
 class Button extends AbstractButton implements ShortcutInterface
 {
@@ -45,11 +48,29 @@ class Button extends AbstractButton implements ShortcutInterface
     private $defaultConfigProvider;
 
     /**
+     * @var UrlInterface $url
+     */
+    private $url;
+
+    /**
+     * @var CustomerSession $customerSession
+     */
+    private $customerSession;
+
+    /**
+     * @var StoreManagerInterface $storeManager
+     */
+    private $storeManager;
+
+    /**
      * Button constructor
      *
      * @param Context $context
      * @param Session $checkoutSession
      * @param MethodInterface $payment
+     * @param UrlInterface $url
+     * @param CustomerSession $customerSession
+     * @param StoreManagerInterface $storeManagerInterface
      * @param DefaultConfigProvider $defaultConfigProvider
      * @param array $data
      * @throws InputException
@@ -59,10 +80,13 @@ class Button extends AbstractButton implements ShortcutInterface
         Context $context,
         Session $checkoutSession,
         MethodInterface $payment,
+        UrlInterface $url,
+        CustomerSession $customerSession,
+        StoreManagerInterface $storeManagerInterface,
         DefaultConfigProvider $defaultConfigProvider,
         array $data = []
     ) {
-        parent::__construct($context, $checkoutSession, $payment, $data);
+        parent::__construct($context, $checkoutSession, $payment, $url, $customerSession, $storeManagerInterface, $data);
         $this->defaultConfigProvider = $defaultConfigProvider;
     }
 
