@@ -87,35 +87,29 @@ define([
                     event.preventDefault();
 
                     var context = new Api();
-
+                    context.setGrandTotalAmount(parseFloat(config.grandTotalAmount).toFixed(2));
+                    context.setQuoteId(config.quoteId);
+                    context.setActionSuccess(config.actionSuccess);
+                    context.setIsLoggedIn(config.isLoggedIn);
+                    context.setStoreCode(config.storeCode);
+                    context.setDisplayName($t('Grand Total'));
 
                     var self = this;
                     if (!additionalValidators.validate()) {
                         return false;
                     }
                     var request = {
-                        countryCode: 'US',
+                        countryCode: config.countryCode,
                         currencyCode: quote.totals().quote_currency_code,
                         supportedNetworks: ['visa', 'masterCard', 'amex', 'discover', 'maestro', 'vPay', 'jcb', 'elo'],
                         merchantCapabilities: ['supports3DS'],
-                        total: {label: $t('Grand Total'), amount: quote.totals().base_grand_total}
+                        total: {label: $t('Grand Total'), amount: parseFloat(config.grandTotalAmount).toFixed(2)},
+                        requiredShippingContactFields: ['postalAddress', 'name', 'email', 'phone'],
+                        requiredBillingContactFields: ['postalAddress', 'name']
                     };
                     var session = new ApplePaySession(applePayVersion, request);
 
-                    if (typeof context.onShippingContactSelect === 'function') {
-                        session.onshippingcontactselected = function (event) {
-                            console.log(123);
-                            return context.onShippingContactSelect(event, session);
-                        };
-                    }
 
-                    // Attach onShippingMethodSelect method
-                    if (typeof context.onShippingMethodSelect === 'function') {
-                        session.onshippingmethodselected = function (event) {
-                            console.log(12322);
-                            return context.onShippingMethodSelect(event, session);
-                        };
-                    }
                     session.onvalidatemerchant = function (event) {
                         var promise = self.performValidation(event.validationURL);
                         promise.then(function (merchantSession) {
@@ -124,50 +118,19 @@ define([
                     }
 
                     session.onpaymentauthorized = function (event) {
-                        var data = {
-                            'method': self.item.method,
-                            'additional_data': {'token': JSON.stringify(event.payment)}
-                        };
-                        var promise = self.sendPayment(event.payment, data);
-
-                        promise.then(function (success) {
-                            var status;
-                            if (success) {
-                                status = ApplePaySession.STATUS_SUCCESS;
-                            } else {
-                                status = ApplePaySession.STATUS_FAILURE;
-                            }
-
-                            session.completePayment(status);
-
-                            if (success) {
-                                window.location.replace(url.build(window.checkoutConfig.payment[quote.paymentMethod().method].redirectUrl));
-                            }
-                        }, function (reason) {
-                            if (reason.message == "ERROR BILLING") {
-                                var status = session.STATUS_INVALID_BILLING_POSTAL_ADDRESS;
-                            } else if (reason.message == "ERROR SHIPPING") {
-                                var status = session.STATUS_INVALID_SHIPPING_POSTAL_ADDRESS;
-                            } else {
-                                var status = session.STATUS_FAILURE;
-                            }
-                            session.completePayment(status);
-                        });
+                        context.startPlaceOrder('ads', event, session);
                     };
 
 
-                    // Attach onShippingContactSelect method
                     if (typeof context.onShippingContactSelect === 'function') {
                         session.onshippingcontactselected = function (event) {
-                            console.log(123);
-                            //return context.onShippingContactSelect(event, session);
+                            return context.onShippingContactSelect(event, session);
                         };
                     }
 
                     // Attach onShippingMethodSelect method
                     if (typeof context.onShippingMethodSelect === 'function') {
                         session.onshippingmethodselected = function (event) {
-                            console.log(12322);
                             return context.onShippingMethodSelect(event, session);
                         };
                     }

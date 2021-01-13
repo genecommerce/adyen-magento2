@@ -32,6 +32,8 @@ use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Element\Template\Context;
 use Magento\Payment\Model\MethodInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Tests\NamingConvention\true\string;
 
 /***/
 abstract class AbstractButton extends Template
@@ -61,6 +63,12 @@ abstract class AbstractButton extends Template
      */
     private $storeManager;
 
+    /**
+     * @var ScopeConfigInterface $scopeConfig
+     */
+    private $scopeConfig;
+
+    const COUNTRY_CODE_PATH = 'general/country/default';
 
     /**
      * Button constructor.
@@ -70,6 +78,7 @@ abstract class AbstractButton extends Template
      * @param UrlInterface $url
      * @param CustomerSession $customerSession
      * @param StoreManagerInterface $storeManagerInterface
+     * @param ScopeConfigInterface $scopeConfig
      * @param array $data
      * @throws InputException
      * @throws NoSuchEntityException
@@ -81,6 +90,7 @@ abstract class AbstractButton extends Template
         UrlInterface $url,
         CustomerSession $customerSession,
         StoreManagerInterface $storeManagerInterface,
+        ScopeConfigInterface $scopeConfig,
         array $data = []
     ) {
         parent::__construct($context, $data);
@@ -89,6 +99,7 @@ abstract class AbstractButton extends Template
         $this->url = $url;
         $this->customerSession = $customerSession;
         $this->storeManager = $storeManagerInterface;
+        $this->scopeConfig = $scopeConfig;
     }
 
     /**
@@ -148,5 +159,17 @@ abstract class AbstractButton extends Template
     public function getStorecode(): string
     {
         return $this->storeManager->getStore()->getCode();
+    }
+
+    /**
+     * @return string
+     * @throws NoSuchEntityException
+     */
+    public function getDefaultCountryCode(): string
+    {
+        return $this->scopeConfig->getValue(
+            self::COUNTRY_CODE_PATH,
+            \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITES
+        );
     }
 }

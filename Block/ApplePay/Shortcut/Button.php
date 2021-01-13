@@ -28,6 +28,7 @@ use Magento\Checkout\Model\Session;
 use Magento\Catalog\Block\ShortcutInterface;
 use Magento\Checkout\Model\DefaultConfigProvider;
 use Magento\Customer\Model\Session as CustomerSession;
+use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Exception\InputException;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\UrlInterface;
@@ -63,6 +64,11 @@ class Button extends AbstractButton implements ShortcutInterface
     private $storeManager;
 
     /**
+     * @var ScopeConfigInterface $scopeConfig
+     */
+    private $scopeConfig;
+
+    /**
      * Button constructor
      *
      * @param Context $context
@@ -72,6 +78,7 @@ class Button extends AbstractButton implements ShortcutInterface
      * @param CustomerSession $customerSession
      * @param StoreManagerInterface $storeManagerInterface
      * @param DefaultConfigProvider $defaultConfigProvider
+     * @param ScopeConfigInterface $scopeConfig
      * @param array $data
      * @throws InputException
      * @throws NoSuchEntityException
@@ -84,9 +91,10 @@ class Button extends AbstractButton implements ShortcutInterface
         CustomerSession $customerSession,
         StoreManagerInterface $storeManagerInterface,
         DefaultConfigProvider $defaultConfigProvider,
+        ScopeConfigInterface $scopeConfig,
         array $data = []
     ) {
-        parent::__construct($context, $checkoutSession, $payment, $url, $customerSession, $storeManagerInterface, $data);
+        parent::__construct($context, $checkoutSession, $payment, $url, $customerSession, $storeManagerInterface, $scopeConfig, $data);
         $this->defaultConfigProvider = $defaultConfigProvider;
     }
 

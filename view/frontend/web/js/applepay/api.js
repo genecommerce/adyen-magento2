@@ -1,5 +1,5 @@
 /**
- * Braintree Apple Pay button API
+ * Adyen Apple Pay button API
  *
  **/
 define(
@@ -49,10 +49,6 @@ define(
                 }
             },
 
-            test: function () {
-                console.log('asd');
-            },
-
             /**
              * Get region ID
              */
@@ -68,16 +64,6 @@ define(
                 }
 
                 return 0;
-            },
-
-            /**
-             * Set & get api token
-             */
-            setClientToken: function (value) {
-                this.clientToken = value;
-            },
-            getClientToken: function () {
-                return this.clientToken;
             },
 
             /**
@@ -151,19 +137,6 @@ define(
                 }
             },
 
-            /**
-             * Payment request info
-             */
-            getPaymentRequest: function () {
-                return {
-                    total: {
-                        label: this.getDisplayName(),
-                        amount: this.getGrandTotalAmount()
-                    },
-                    requiredShippingContactFields: ['postalAddress', 'name', 'email', 'phone'],
-                    requiredBillingContactFields: ['postalAddress', 'name']
-                };
-            },
 
             /**
              * Retrieve shipping methods based on address
@@ -262,14 +235,14 @@ define(
                     }.bind(this)).fail(function (result) {
                         session.abort();
                         alert($t("We're unable to fetch the cart totals for you. Please try an alternative payment method."));
-                        console.error("Braintree ApplePay: Unable to get totals", result);
+                        console.error("Adyen ApplePay: Unable to get totals", result);
                         return false;
                     });
 
                 }.bind(this)).fail(function (result) {
                     session.abort();
                     alert($t("We're unable to find any shipping methods for you. Please try an alternative payment method."));
-                    console.error("Braintree ApplePay: Unable to find shipping methods for estimate-shipping-methods", result);
+                    console.error("Adyen ApplePay: Unable to find shipping methods for estimate-shipping-methods", result);
                     return false;
                 });
             },
@@ -372,9 +345,9 @@ define(
                             {
                                 "email": shippingContact.emailAddress,
                                 "paymentMethod": {
-                                    "method": "braintree_applepay",
+                                    "method": "adyen_apple_pay",
                                     "additional_data": {
-                                        "payment_method_nonce": nonce
+                                        "token": JSON.stringify(event.payment)
                                     }
                                 }
                             }
@@ -386,12 +359,12 @@ define(
                         session.completePayment(ApplePaySession.STATUS_FAILURE);
                         session.abort();
                         alert($t("We're unable to take your payment through Apple Pay. Please try an again or use an alternative payment method."));
-                        console.error("Braintree ApplePay Unable to take payment", r);
+                        console.error("Adyen ApplePay Unable to take payment", r);
                         return false;
                     });
 
                 }.bind(this)).fail(function (r) {
-                    console.error("Braintree ApplePay Unable to set shipping information", r);
+                    console.error("Adyen ApplePay Unable to set shipping information", r);
                     session.completePayment(ApplePaySession.STATUS_INVALID_BILLING_POSTAL_ADDRESS);
                 });
             }
