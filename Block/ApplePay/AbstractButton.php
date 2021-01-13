@@ -33,7 +33,6 @@ use Magento\Framework\View\Element\Template\Context;
 use Magento\Payment\Model\MethodInterface;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Framework\App\Config\ScopeConfigInterface;
-use Magento\Tests\NamingConvention\true\string;
 
 /***/
 abstract class AbstractButton extends Template
