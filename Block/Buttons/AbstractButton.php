@@ -21,7 +21,7 @@
  * Author: Adyen <magento@adyen.com>
  */
 
-namespace Adyen\Payment\Block\ApplePay;
+namespace Adyen\Payment\Block\Buttons;
 
 use Magento\Checkout\Model\Session;
 use Magento\Customer\Model\Session as CustomerSession;

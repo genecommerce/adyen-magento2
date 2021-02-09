@@ -21,7 +21,7 @@
  * Author: Adyen <magento@adyen.com>
  */
 
-namespace Adyen\Payment\Block\ApplePay\Shortcut;
+namespace Adyen\Payment\Block\GooglePay\Shortcut;
 
 use Adyen\Payment\Block\Buttons\AbstractButton;
 use Magento\Checkout\Model\Session;
@@ -104,6 +104,16 @@ class Button extends AbstractButton implements ShortcutInterface
     public function getAlias(): string
     {
         return $this->getData(self::ALIAS_ELEMENT_INDEX);
+    }
+
+    /**
+     * URL To success page
+     *
+     * @return string
+     */
+    public function getActionSuccess(): string
+    {
+        return $this->getUrl('adyen/googlepay/review', ['_secure' => true]);
     }
 
     /**

@@ -56,4 +56,14 @@
             <item name="payment" xsi:type="object">AdyenPaymentApplePayFacade</item>
         </arguments>
     </type>
+    <type name="Adyen\Payment\Block\GooglePay\Shortcut\Button">
+        <arguments>
+            <argument name="data" xsi:type="array">
+                <item name="template" xsi:type="string">Adyen_Payment::googlepay/shortcut.phtml</item>
+                <item name="alias" xsi:type="string">adyen.googlepay.mini-cart</item>
+                <item name="button_id" xsi:type="string">adyen-googlepay-mini-cart</item>
+            </argument>
+            <item name="payment" xsi:type="object">AdyenPaymentGooglePayFacade</item>
+        </arguments>
+    </type>
 </config>

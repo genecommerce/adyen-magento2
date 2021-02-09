@@ -642,6 +642,18 @@ class Data extends AbstractHelper
     }
 
     /**
+     * Gives back adyen_google_pay configuration values
+     *
+     * @param $field
+     * @param null|int|string $storeId
+     * @return mixed
+     */
+    public function getAdyenGooglePayConfigData($field, $storeId = null)
+    {
+        return $this->getConfigData($field, 'adyen_google_pay', $storeId);
+    }
+
+    /**
      * Gives back adyen_apple_pay configuration values
      *
      * @param $field
@@ -651,6 +663,18 @@ class Data extends AbstractHelper
     public function isAdyenApplePayEnabled($storeId = null)
     {
         return $this->getAdyenApplePayConfigData('active', $storeId);
+    }
+
+    /**
+     * Gives back adyen_google_pay configuration values
+     *
+     * @param $field
+     * @param null|int|string $storeId
+     * @return mixed
+     */
+    public function isAdyenGooglePayEnabled($storeId = null)
+    {
+        return $this->getAdyenGooglePayConfigData('active', $storeId);
     }
 
     /**
@@ -679,30 +703,6 @@ class Data extends AbstractHelper
         } else {
             return $this->getAdyenApplePayConfigData('full_path_location_pem_file_live', $storeId);
         }
-    }
-
-    /**
-     * Gives back adyen_google_pay configuration values
-     *
-     * @param $field
-     * @param null|int|string $storeId
-     * @return mixed
-     */
-    public function getAdyenGooglePayConfigData($field, $storeId = null)
-    {
-        return $this->getConfigData($field, 'adyen_google_pay', $storeId);
-    }
-
-    /**
-     * Gives back adyen_google_pay configuration values
-     *
-     * @param $field
-     * @param null|int|string $storeId
-     * @return mixed
-     */
-    public function isAdyenGooglePayEnabled($storeId = null)
-    {
-        return $this->getAdyenGooglePayConfigData('active', $storeId);
     }
 
     /**
