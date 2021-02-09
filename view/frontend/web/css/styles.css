@@ -118,7 +118,7 @@
         display: none;
     }
 }
-
+.google-pay-button-card,
 .apple-pay-button-with-text {
     --apple-pay-scale: 1.5625; /* (height / 32) */
     display: inline-flex;
