@@ -31,7 +31,7 @@ define([
         'Adyen_Payment/js/form-builder',
         'Magento_Vault/js/view/payment/vault-enabler',
         'gplibrary',
-        'adyenCheckout'
+        'adyenCheckout',
         'mage/translate',
     ],
     function ($, ko, fullScreenLoader, quote, Component, additionalValidators, Messages, formBuilder, VaultEnabler, gplibrary, AdyenCheckout, $t) {
@@ -43,7 +43,6 @@ define([
                 id: null,
                 quoteId: 0,
                 displayName: null,
-                actionSuccess: null,
                 grandTotalAmount: 0,
                 isLoggedIn: false,
                 storeCode: "default",
