@@ -79,6 +79,7 @@ class Button extends AbstractButton implements ShortcutInterface
      * @param StoreManagerInterface $storeManagerInterface
      * @param DefaultConfigProvider $defaultConfigProvider
      * @param ScopeConfigInterface $scopeConfig
+     * @param \Adyen\Payment\Helper\Data $adyenHelper
      * @param array $data
      * @throws InputException
      * @throws NoSuchEntityException
@@ -92,9 +93,10 @@ class Button extends AbstractButton implements ShortcutInterface
         StoreManagerInterface $storeManagerInterface,
         DefaultConfigProvider $defaultConfigProvider,
         ScopeConfigInterface $scopeConfig,
+        \Adyen\Payment\Helper\Data $adyenHelper,
         array $data = []
     ) {
-        parent::__construct($context, $checkoutSession, $payment, $url, $customerSession, $storeManagerInterface, $scopeConfig, $data);
+        parent::__construct($context, $checkoutSession, $payment, $url, $customerSession, $storeManagerInterface, $scopeConfig, $adyenHelper, $data);
         $this->defaultConfigProvider = $defaultConfigProvider;
     }
 

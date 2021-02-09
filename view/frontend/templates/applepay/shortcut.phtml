@@ -23,7 +23,14 @@ $config = [
         'grandTotalAmount' => $block->getAmount(),
         'isLoggedIn' => $block->isCustomerLoggedIn(),
         'storeCode' => $block->getStorecode(),
-        'countryCode' => $block->getDefaultCountryCode()
+        'countryCode' => $block->getDefaultCountryCode(),
+        'currency' => $block->getCurrency(),
+        'merchantAccount' => $block->getMerchantAccount(),
+        'format' => $block->getFormat(),
+        'locale' => $block->getLocale(),
+        'merchantIdentifier' => $block->getMerchantIdentifier(),
+        'originkey' => $block->getOriginKey(),
+        'checkoutenv' => $block->getCheckoutEnvironment()
     ]
 ];
 ?>

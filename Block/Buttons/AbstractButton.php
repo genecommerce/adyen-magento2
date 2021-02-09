@@ -67,7 +67,13 @@ abstract class AbstractButton extends Template
      */
     private $scopeConfig;
 
+    /**
+     * @var \Adyen\Payment\Helper\Data
+     */
+    protected $adyenHelper;
+
     const COUNTRY_CODE_PATH = 'general/country/default';
+    const PRODUCTION = 'production';
 
     /**
      * Button constructor.
@@ -78,6 +84,7 @@ abstract class AbstractButton extends Template
      * @param CustomerSession $customerSession
      * @param StoreManagerInterface $storeManagerInterface
      * @param ScopeConfigInterface $scopeConfig
+     * @param \Adyen\Payment\Helper\Data $adyenHelper
      * @param array $data
      * @throws InputException
      * @throws NoSuchEntityException
@@ -90,6 +97,7 @@ abstract class AbstractButton extends Template
         CustomerSession $customerSession,
         StoreManagerInterface $storeManagerInterface,
         ScopeConfigInterface $scopeConfig,
+        \Adyen\Payment\Helper\Data $adyenHelper,
         array $data = []
     ) {
         parent::__construct($context, $data);
@@ -99,6 +107,7 @@ abstract class AbstractButton extends Template
         $this->customerSession = $customerSession;
         $this->storeManager = $storeManagerInterface;
         $this->scopeConfig = $scopeConfig;
+        $this->adyenHelper = $adyenHelper;
     }
 
     /**
@@ -162,7 +171,6 @@ abstract class AbstractButton extends Template
 
     /**
      * @return string
-     * @throws NoSuchEntityException
      */
     public function getDefaultCountryCode(): string
     {
@@ -170,5 +178,72 @@ abstract class AbstractButton extends Template
             self::COUNTRY_CODE_PATH,
             \Magento\Store\Model\ScopeInterface::SCOPE_WEBSITES
         );
+    }
+
+    /**
+     * @return string|null
+     * @throws NoSuchEntityException
+     * @throws \Magento\Framework\Exception\LocalizedException
+     */
+    public function getCurrency()
+    {
+        return $this->checkoutSession->getQuote()->getCurrency()->getBaseCurrencyCode();
+    }
+
+    /**
+     * @return string
+     */
+    public function getMerchantAccount(): string
+    {
+        return $this->adyenHelper->getAdyenMerchantAccount(
+            "adyen_google_pay",
+            $this->storeManager->getStore()->getId()
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function getLocale(): string
+    {
+        return $this->adyenHelper->getStoreLocale(
+            $this->storeManager->getStore()->getId()
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function getFormat(): string
+    {
+        return $this->adyenHelper->decimalNumbers($this->getCurrency());
+    }
+
+    /**
+     * @return string
+     */
+    public function getMerchantIdentifier(): string
+    {
+        return $this->adyenHelper->getAdyenGooglePayMerchantIdentifier($this->storeManager->getStore()->getId());
+    }
+
+    /**
+     * @return string
+     */
+    public function getOriginKey(): string
+    {
+        return $this->adyenHelper->getOriginKeyForBaseUrl();
+    }
+
+    /**
+     * @return string
+     */
+    public function getCheckoutEnvironment(): string
+    {
+        if ($this->adyenHelper->isDemoMode($this->storeManager->getStore()->getId())) {
+            return \Adyen\Payment\Helper\Data::TEST;
+        }
+
+        return self::PRODUCTION;
     }
 }

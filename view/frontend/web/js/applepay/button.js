@@ -23,18 +23,15 @@
 define([
         'jquery',
         'ko',
-        'Magento_Checkout/js/model/quote',
-        'Magento_Checkout/js/view/payment/default',
-        'Magento_Checkout/js/action/place-order',
+        'uiComponent',
         'Magento_Checkout/js/model/payment/additional-validators',
-        'Magento_Checkout/js/model/url-builder',
         'mage/storage',
         'mage/url',
         'Magento_Ui/js/model/messages',
         'Adyen_Payment/js/applepay/api',
         'mage/translate',
     ],
-    function ($, ko, quote, Component, placeOrderAction, additionalValidators, urlBuilder, storage, url, Messages, Api, $t) {
+    function ($, ko, Component, additionalValidators, storage, url, Messages, Api, $t) {
         'use strict';
         var canMakeApplePayPayments = ko.observable(false);
         var applePayVersion = 6;
@@ -100,7 +97,7 @@ define([
                     }
                     var request = {
                         countryCode: config.countryCode,
-                        currencyCode: quote.totals().quote_currency_code,
+                        currencyCode: config.currency,
                         supportedNetworks: ['visa', 'masterCard', 'amex', 'discover', 'maestro', 'vPay', 'jcb', 'elo'],
                         merchantCapabilities: ['supports3DS'],
                         total: {label: $t('Grand Total'), amount: parseFloat(config.grandTotalAmount).toFixed(2)},
@@ -110,12 +107,7 @@ define([
                     var session = new ApplePaySession(applePayVersion, request);
 
 
-                    session.onvalidatemerchant = function (event) {
-                        var promise = self.performValidation(event.validationURL);
-                        promise.then(function (merchantSession) {
-                            session.completeMerchantValidation(merchantSession);
-                        });
-                    }
+
 
                     session.onpaymentauthorized = function (event) {
                         context.startPlaceOrder('ads', event, session);
@@ -139,20 +131,11 @@ define([
                 }.bind(this));
 
             },
-            getControllerName: function () {
-                return window.checkoutConfig.payment.iframe.controllerName[this.getCode()];
-            },
-            getPlaceOrderUrl: function () {
-                return window.checkoutConfig.payment.iframe.placeOrderUrl[this.getCode()];
-            },
             context: function () {
                 return this;
             },
             validate: function () {
                 return true;
-            },
-            showLogo: function () {
-                return window.checkoutConfig.payment.adyen.showLogo;
             },
             isApplePayAllowed: function () {
                 if (!!window.ApplePaySession) {
@@ -163,47 +146,10 @@ define([
                 }
                 return false;
             },
-            performValidation: function (validationURL) {
-                // Return a new promise.
-                return new Promise(function (resolve, reject) {
-
-                    // retrieve payment methods
-                    var serviceUrl = urlBuilder.createUrl('/adyen/request-merchant-session', {});
-
-                    storage.post(
-                        serviceUrl,
-                        JSON.stringify('{}')
-                    ).done(
-                        function (response) {
-                            var data = JSON.parse(response);
-                            resolve(data);
-                        }
-                    ).fail(function (error) {
-                        console.log(JSON.stringify(error));
-                        reject(Error("Network Error"));
-                    });
-                });
-            },
-            sendPayment: function (payment, data) {
-                var deferred = $.Deferred();
-                return $.when(
-                    placeOrderAction(data, new Messages())
-                ).fail(
-                    function (response) {
-                        deferred.reject(Error(response));
-                    }
-                ).done(
-                    function () {
-                        deferred.resolve(true);
-                    }
-                );
-            },
             isApplePayVisible: function () {
                 return canMakeApplePayPayments();
             },
-            getMerchantIdentifier: function () {
-                return window.checkoutConfig.payment.adyen_apple_pay.merchant_identifier;
-            }
+
         });
     }
 );

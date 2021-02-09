@@ -22,10 +22,9 @@
  */
 define([
         'jquery',
+        'uiComponent',
         'ko',
         'Magento_Checkout/js/model/full-screen-loader',
-        'Magento_Checkout/js/model/quote',
-        'Magento_Checkout/js/view/payment/default',
         'Magento_Checkout/js/model/payment/additional-validators',
         'Magento_Ui/js/model/messages',
         'Adyen_Payment/js/form-builder',
@@ -34,7 +33,7 @@ define([
         'adyenCheckout',
         'mage/translate',
     ],
-    function ($, ko, fullScreenLoader, quote, Component, additionalValidators, Messages, formBuilder, VaultEnabler, gplibrary, AdyenCheckout, $t) {
+    function ($, Component, ko, fullScreenLoader, additionalValidators, Messages, formBuilder, VaultEnabler, gplibrary, AdyenCheckout, $t) {
         'use strict';
         var canMakeApplePayPayments = ko.observable(false);
         var applePayVersion = 6;
@@ -68,16 +67,16 @@ define([
                     ]);
                 var self = this;
                 self.checkoutComponent = new AdyenCheckout({
-                    locale: self.getLocale(),
-                    originKey: self.getOriginKey(),
-                    environment: self.getCheckoutEnvironment(),
+                    locale: config.locale,
+                    originKey: config.originkey,
+                    environment: config.checkoutenv,
                     risk: {
                         enabled: false
                     }
                 });
                 var googlepay = self.checkoutComponent.create('paywithgoogle', {
                     showPayButton: true,
-                    environment: self.getCheckoutEnvironment().toUpperCase(),
+                    environment: config.checkoutenv.toUpperCase(),
                     buttonColor: 'black', // default/black/white
                     buttonType: 'long', // long/short
                     showButton: true, // show or hide the Google Pay button
@@ -86,8 +85,8 @@ define([
                     billingAddressRequired: true,
                     transactionInfo: {
                         totalPriceStatus: 'FINAL',
-                        totalPrice: self.formatAmount(quote.totals().grand_total, self.getFormat()),
-                        currencyCode: quote.totals().quote_currency_code
+                        totalPrice: self.formatAmount(config.amount, config.format),
+                        currencyCode: config.currency
                     },
                     allowedPaymentMethods: ['CARD'],
                     phoneNumberRequired: true,
@@ -97,16 +96,16 @@ define([
                     },
                     configuration: {
                         // Adyen's merchant account
-                        gatewayMerchantId: self.getMerchantAccount(),
+                        gatewayMerchantId: config.merchantAccount,
 
                         // https://developers.google.com/pay/api/web/reference/object#MerchantInfo
-                        merchantIdentifier: self.getMerchantIdentifier(),
-                        merchantName: self.getMerchantAccount()
+                        merchantIdentifier: config.merchantIdentifier,
+                        merchantName: config.merchantAccount
                     },
 
                     // Payment
-                    amount: self.formatAmount(quote.totals().grand_total, self.getFormat()),
-                    currency: quote.totals().quote_currency_code,
+                    amount: self.formatAmount(config.amount, config.format),
+                    currency: config.currency,
                     totalPriceStatus: 'FINAL',
 
                     // empty onSubmit to resolve javascript issues.
@@ -186,26 +185,11 @@ define([
                 }).submit();
             },
 
-            getMerchantAccount: function () {
-                return window.checkoutConfig.payment.adyenGooglePay.merchantAccount;
-            },
-            getLocale: function () {
-                return window.checkoutConfig.payment.adyenGooglePay.locale;
-            },
-            getFormat: function () {
-                return window.checkoutConfig.payment.adyenGooglePay.format;
-            },
-            getMerchantIdentifier: function () {
-                return window.checkoutConfig.payment.adyenGooglePay.merchantIdentifier;
-            },
             context: function () {
                 return this;
             },
             validate: function (hideErrors) {
                 return this.additionalValidators.validate(hideErrors);
-            },
-            getControllerName: function () {
-                return window.checkoutConfig.payment.iframe.controllerName[this.getCode()];
             },
             /**
              * Set and get success redirection url
@@ -215,9 +199,6 @@ define([
             },
             getActionSuccess: function () {
                 return this.actionSuccess;
-            },
-            isGooglePayEnabled: function () {
-                return window.checkoutConfig.payment.adyenGooglePay.active;
             },
             /**
              * Get data for place order
@@ -246,12 +227,6 @@ define([
             },
             getVaultCode: function () {
                 return "adyen_google_pay_vault";
-            },
-            getOriginKey: function () {
-                return window.checkoutConfig.payment.adyen.originKey;
-            },
-            getCheckoutEnvironment: function () {
-                return window.checkoutConfig.payment.adyenGooglePay.checkoutEnvironment;
             },
             onPaymentMethodContentChange: function (data, event) {
                 $(this.googlePayNode).find('button').prop('disabled', !this.validate());
