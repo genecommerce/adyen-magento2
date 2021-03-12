@@ -200,18 +200,6 @@ define([
             getActionSuccess: function () {
                 return this.actionSuccess;
             },
-            /**
-             * Get data for place order
-             * @returns {{method: *}}
-             */
-            getData: function () {
-                return {
-                    'method': "adyen_google_pay",
-                    'additional_data': {
-                        'token': this.googlePayToken()
-                    }
-                };
-            },
 
             /**
              * Return the formatted currency. Adyen accepts the currency in multiple formats.

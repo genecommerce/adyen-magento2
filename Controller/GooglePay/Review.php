@@ -74,7 +74,6 @@ class Review extends Action
      */
     public function execute()
     {
-        $r = 1;
         $requestData = json_decode(
             $this->getRequest()->getPostValue('result', '{}'),
             true

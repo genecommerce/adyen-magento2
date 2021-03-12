@@ -64,9 +64,9 @@ class AddApplePayShortcuts implements ObserverInterface
             return;
         }
 
-        if (!$this->adyenHelper->getAdyenApplePayConfigData('enable_button') ||  !$this->adyenHelper->isAdyenApplePayEnabled()) {
+        /*if (!$this->adyenHelper->getAdyenApplePayConfigData('enable_button') ||  !$this->adyenHelper->isAdyenApplePayEnabled()) {
             return;
-        }
+        }*/
 
         /** @var ShortcutButtons $shortcutButtons */
         $shortcutButtons = $observer->getEvent()->getContainer();

@@ -56,8 +56,16 @@ class QuoteUpdater extends AbstractHelper
         }
 
         $payment = $quote->getPayment();
-        $payment->setMethod('adyen_google_pay');
-        $payment->setAdditionalInformation('token', $nonce);
+        $payment->setMethod('adyen_hpp');
+        $payment->setAdditionalInformation([
+            'brand_code' => 'paywithgoogle',
+            'stateData' => [
+                'paymentMethod' => [
+                    'type' => 'paywithgoogle',
+                    'googlePayToken' => $nonce
+                ]
+            ]
+        ]);
         $this->updateQuote($quote, $details);
     }
 

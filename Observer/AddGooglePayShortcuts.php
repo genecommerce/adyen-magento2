@@ -64,9 +64,9 @@ class AddGooglePayShortcuts implements ObserverInterface
             return;
         }
 
-        if (!$this->adyenHelper->getAdyenGooglePayConfigData('enable_button') ||  !$this->adyenHelper->isAdyenGooglePayEnabled()) {
+        /*if (!$this->adyenHelper->getAdyenGooglePayConfigData('enable_button') ||  !$this->adyenHelper->isAdyenGooglePayEnabled()) {
             return;
-        }
+        }*/
 
         /** @var ShortcutButtons $shortcutButtons */
         $shortcutButtons = $observer->getEvent()->getContainer();
