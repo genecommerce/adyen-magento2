@@ -345,9 +345,15 @@ define(
                             {
                                 "email": shippingContact.emailAddress,
                                 "paymentMethod": {
-                                    "method": "adyen_apple_pay",
+                                    "method": "adyen_hpp",
                                     "additional_data": {
-                                        "token": JSON.stringify(event.payment)
+                                        "brand_code": "applepay",
+                                        "stateData": {
+                                            "paymentMethod": {
+                                                "type": "applepay",
+                                                "applePayToken": JSON.stringify(event.payment)
+                                            }
+                                        }
                                     }
                                 }
                             }

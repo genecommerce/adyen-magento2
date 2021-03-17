@@ -106,8 +106,12 @@ define([
                     };
                     var session = new ApplePaySession(applePayVersion, request);
 
-
-
+                    session.onvalidatemerchant = function (event) {
+                        var promise = self.performValidation(event.validationURL);
+                        promise.then(function (merchantSession) {
+                            session.completeMerchantValidation(merchantSession);
+                        });
+                    };
 
                     session.onpaymentauthorized = function (event) {
                         context.startPlaceOrder('ads', event, session);
@@ -149,6 +153,29 @@ define([
             isApplePayVisible: function () {
                 return canMakeApplePayPayments();
             },
+
+            performValidation: function (validationURL) {
+                // Return a new promise.
+                return new Promise(function (resolve, reject) {
+
+                    // retrieve payment methods
+                    var serviceUrl = urlBuilder.createUrl('/adyen/request-merchant-session', {});
+
+                    storage.post(
+                        serviceUrl,
+                        JSON.stringify('{}')
+                    ).done(
+                        function (response) {
+                            var data = JSON.parse(response);
+                            resolve(data);
+                        }
+                    ).fail(function (error) {
+                        console.log(JSON.stringify(error));
+                        reject(Error("Network Error"));
+                    });
+                });
+            },
+
 
         });
     }
