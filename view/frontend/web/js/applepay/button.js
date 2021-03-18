@@ -106,6 +106,8 @@ define([
                     };
                     var session = new ApplePaySession(applePayVersion, request);
 
+
+
                     session.onvalidatemerchant = function (event) {
                         var promise = self.performValidation(event.validationURL);
                         promise.then(function (merchantSession) {
@@ -116,7 +118,6 @@ define([
                     session.onpaymentauthorized = function (event) {
                         context.startPlaceOrder('ads', event, session);
                     };
-
 
                     if (typeof context.onShippingContactSelect === 'function') {
                         session.onshippingcontactselected = function (event) {
@@ -159,8 +160,7 @@ define([
                 return new Promise(function (resolve, reject) {
 
                     // retrieve payment methods
-                    var serviceUrl = urlBuilder.createUrl('/adyen/request-merchant-session', {});
-
+                    var serviceUrl = 'rest/default/V1/adyen/request-merchant-session'
                     storage.post(
                         serviceUrl,
                         JSON.stringify('{}')
@@ -175,7 +175,6 @@ define([
                     });
                 });
             },
-
 
         });
     }
