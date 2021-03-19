@@ -630,6 +630,83 @@ class Data extends AbstractHelper
     }
 
     /**
+     * Gives back adyen_apple_pay configuration values
+     *
+     * @param $field
+     * @param null|int|string $storeId
+     * @return mixed
+     */
+    public function getAdyenApplePayConfigData($field, $storeId = null)
+    {
+        return $this->getConfigData($field, 'adyen_hpp', $storeId);
+    }
+
+    /**
+     * @param null|int|string $storeId
+     * @return mixed
+     */
+    public function getAdyenApplePayMerchantIdentifier($storeId = null)
+    {
+        $demoMode = $this->getAdyenAbstractConfigDataFlag('demo_mode');
+        if ($demoMode) {
+            return $this->getAdyenApplePayConfigData('merchant_identifier_test', $storeId);
+        } else {
+            return $this->getAdyenApplePayConfigData('merchant_identifier_live', $storeId);
+        }
+    }
+
+    /**
+     * @param null|int|string $storeId
+     * @return mixed
+     */
+    public function getAdyenApplePayPemFileLocation($storeId = null)
+    {
+        $demoMode = $this->getAdyenAbstractConfigDataFlag('demo_mode');
+        if ($demoMode) {
+            return $this->getAdyenApplePayConfigData('full_path_location_pem_file_test', $storeId);
+        } else {
+            return $this->getAdyenApplePayConfigData('full_path_location_pem_file_live', $storeId);
+        }
+    }
+
+    /**
+     * Gives back adyen_google_pay configuration values
+     *
+     * @param $field
+     * @param null|int|string $storeId
+     * @return mixed
+     */
+    public function getAdyenGooglePayConfigData($field, $storeId = null)
+    {
+        return $this->getConfigData($field, 'adyen_hpp', $storeId);
+    }
+
+    /**
+     * Gives back adyen_google_pay configuration values
+     *
+     * @param $field
+     * @param null|int|string $storeId
+     * @return mixed
+     */
+    public function isAdyenGooglePayEnabled($storeId = null)
+    {
+        return $this->getAdyenGooglePayConfigData('google_pay_button_active', $storeId);
+    }
+
+    /**
+     * @param string $storeId
+     * @return mixed
+     */
+    public function getAdyenGooglePayMerchantIdentifier($storeId = null)
+    {
+        $value = $this->getAdyenGooglePayConfigData('merchant_identifier', $storeId);
+        if($value === null) {
+            return '';
+        }
+        return $value;
+    }
+
+    /**
      * Retrieve decrypted hmac key
      *
      * @return string

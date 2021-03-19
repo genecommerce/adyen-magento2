@@ -70,6 +70,68 @@
                 <config_path>payment/adyen_hpp/country_code</config_path>
             </field>
         </group>
+        <group id="adyen_hpp_google_pay_button" translate="label" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="200">
+            <label>Google Pay</label>
+            <frontend_model>Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>
+            <field id="google_pay_button_active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Enabled</label>
+                <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                <config_path>payment/adyen_hpp/google_pay_button_active</config_path>
+                <comment>Show Google Pay button on mini-cart and cart page</comment>
+            </field>
+
+            <field id="merchant_identifier" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Google Merchant Identifier</label>
+                <tooltip>You can retrieve this from your Apple Account.</tooltip>
+                <config_path>payment/adyen_hpp/merchant_identifier</config_path>
+                <depends>
+                    <field id="google_pay_button_active">1</field>
+                </depends>
+            </field>
+        </group>
+        <group id="adyen_hpp_apple_pay_button" translate="label" showInDefault="1" showInWebsite="1" showInStore="1" sortOrder="200">
+            <label>Apple Pay</label>
+            <frontend_model>Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>
+            <field id="adyen_hpp_apple_pay_button_active" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Enabled</label>
+                <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                <config_path>payment/adyen_hpp/adyen_hpp_apple_pay_button_active</config_path>
+                <comment>Show Apple Pay button on mini-cart and cart page</comment>
+            </field>
+
+            <field id="merchant_identifier_test" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Test: Apple Merchant Identifier</label>
+                <tooltip>You can retrieve this from your Apple Account.</tooltip>
+                <config_path>payment/adyen_hpp/merchant_identifier_test</config_path>
+                <depends>
+                    <field id="adyen_hpp_apple_pay_button_active">1</field>
+                </depends>
+            </field>
+            <field id="merchant_identifier_live" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Live: Apple Merchant Identifier</label>
+                <tooltip>You can retrieve this from your Apple Account.</tooltip>
+                <config_path>payment/adyen_hpp/merchant_identifier_live</config_path>
+                <depends>
+                    <field id="adyen_hpp_apple_pay_button_active">1</field>
+                </depends>
+            </field>
+            <field id="full_path_location_pem_file_test" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Test: PEM File location</label>
+                <tooltip>You need to generate a pem file from the apple certificate. You need to upload this to your webserver and define the full path location here.</tooltip>
+                <config_path>payment/adyen_hpp/full_path_location_pem_file_test</config_path>
+                <depends>
+                    <field id="adyen_hpp_apple_pay_button_active">1</field>
+                </depends>
+            </field>
+            <field id="full_path_location_pem_file_live" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Live: PEM File location</label>
+                <tooltip>You need to generate a pem file from the apple certificate. You need to upload this to your webserver and define the full path location here.</tooltip>
+                <config_path>payment/adyen_hpp/full_path_location_pem_file_live</config_path>
+                <depends>
+                    <field id="adyen_hpp_apple_pay_button_active">1</field>
+                </depends>
+            </field>
+        </group>
         <group id="adyen_hpp_country_specific" translate="label" showInDefault="1" showInWebsite="1" showInStore="0" sortOrder="210">
             <label>Country Specific Settings</label>
             <frontend_model>Magento\Config\Block\System\Config\Form\Fieldset</frontend_model>
