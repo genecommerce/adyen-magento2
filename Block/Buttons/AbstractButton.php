@@ -123,6 +123,14 @@ abstract class AbstractButton extends Template
     }
 
     /**
+     * @return string
+     */
+    public function getMerchantIdentifier(): string
+    {
+        return $this->adyenHelper->getAdyenGooglePayMerchantIdentifier($this->storeManager->getStore()->getId());
+    }
+
+    /**
      * @return bool
      */
     public function isActive(): bool

@@ -109,14 +109,6 @@ class Button extends AbstractButton implements ShortcutInterface
     }
 
     /**
-     * @return string
-     */
-    public function getMerchantIdentifier(): string
-    {
-        return $this->adyenHelper->getAdyenGooglePayMerchantIdentifier($this->storeManager->getStore()->getId());
-    }
-
-    /**
      * URL To success page
      *
      * @return string
