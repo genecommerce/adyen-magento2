@@ -292,6 +292,7 @@ define(
              * Place the order
              */
             startPlaceOrder: function (nonce, event, session) {
+                console.log(btoa(JSON.stringify(event.payment.token.paymentData)));
                 let shippingContact = event.payment.shippingContact,
                     billingContact = event.payment.billingContact,
                     payload = {
@@ -333,6 +334,13 @@ define(
                         }
                     };
 
+                var stateData;
+                stateData = {
+                    "paymentMethod": {
+                        "type": "applepay",
+                        "applePayToken": btoa(JSON.stringify(event.payment.token.paymentData))
+                    }
+                }
                 // Set addresses
                 storage.post(
                     this.getApiUrl("shipping-information"),
@@ -348,12 +356,7 @@ define(
                                     "method": "adyen_hpp",
                                     "additional_data": {
                                         "brand_code": "applepay",
-                                        "stateData": {
-                                            "paymentMethod": {
-                                                "type": "applepay",
-                                                "applePayToken": JSON.stringify(event.payment)
-                                            }
-                                        }
+                                        "stateData": JSON.stringify(stateData)
                                     }
                                 }
                             }
